@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        defer>
+    <link rel="stylesheet" href="./styles/home.css">
+    <script src="./scripts/home.js" defer></script>
+</head>
+
+<body class="hidden">
+    <div></div>
+    <div class="heading">
+        <a href="./login.html"><i class="bi bi-arrow-left-square"></i> Back</a>
+        <h1>To Do List</h1>
+        <button class="logout">Logout</button>
+    </div>
+
+    <div class="container">
+        <div id="inQueue" class="inner-container">
+            <h2><i class="bi bi-list-task"></i> To do tasks</h2>
+            <ul class="todo-item inQueue"></ul>
+        </div>
+        <div id="inprogress" class="inner-container">
+            <h2><i class="bi bi-gear-wide-connected"></i> In progress tasks</h2>
+            <ul id="inprogress" class="todo-item inprogress"></ul>
+        </div>
+        <div id="completed" class="inner-container">
+            <h2><i class="bi bi-check2-square"></i> Completed tasks</h2>
+            <ul class="todo-item completed"></ul>
+        </div>
+    </div>
+    <button class="create">Create to do task</button>
+    <div class="pop-up">
+        <h1>Add your to do task</h1>
+        <input type="text" name="work" placeholder="Write your to do task">
+        <button class="add">Add to do</button>
+        <button class="edit hidden">Edit todo</button>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="./styles/login.css">
+    <script src="./scripts/register.js" type="module" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-container">
+
+            <div class="inner-container">
+                <h1>Create Account</h1>
+                <p>Please enter your details</p>
+                <div class="error"></div>
+                <form action="">
+                    <div class="flex">
+                        <div class="flex-inner">
+                            <label for="first-name">First name</label>
+                            <input type="text" id="first-name" name="first-name">
+                        </div>
+                        <div class="flex-inner">
+                            <label for=" last-name">Last name</label>
+                            <input type="text" id="last-name" name="last-name">
+                        </div>
+                    </div>
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email">
+                    <div class="flex">
+                        <div class="flex-inner">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username">
+                        </div>
+                        <div class="flex-inner">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="date-of-birth">
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="flex-inner">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password">
+                        </div>
+                        <div class="flex-inner">
+                            <label for="confirm-password">Confirm password</label>
+                            <input type="password" id="confirm-password" name="confirm-password">
+                        </div>
+                    </div>
+                    <button>Create Account</button>
+                </form>
+
+                <p>If already registered then <a href="./login.html">click here</a> to login</p>
+            </div>
+        </div>
+        <div class="img">
+            <img src="./img/login-page-example-the-cube-factory.png.jpg" alt="">
+        </div>
+
+    </div>
+</body>
+
+</html>
