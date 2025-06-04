@@ -12,7 +12,11 @@
 </head>
 
 <body class="hidden">
-    <div></div>
+    <template>
+        <label for="subtask"></label>
+        <input type="checkbox" id="subtask">
+    </template>
+    <div class="blackdrop hidden"></div>
     <div class="heading">
         <a href="./login.html"><i class="bi bi-arrow-left-square"></i> Back</a>
         <h1>To Do List</h1>
@@ -34,12 +38,18 @@
         </div>
     </div>
     <button class="create">Create to do task</button>
-    <div class="pop-up">
+    <div class="pop-up pop-up-tool hidden">
         <h1>Add your to do task</h1>
         <input type="text" name="work" placeholder="Write your to do task">
         <button class="add">Add to do</button>
         <button class="edit hidden">Edit todo</button>
+        <button class="sub hidden">Add sub task</button>
     </div>
+    <!-- <div class="pop-up-subtask pop-up-tool hidden">
+        <h1>Add sub task</h1>
+        <input type="text" name="work" placeholder="Write sub task">
+        <button class="add">Add sub</button>
+    </div> -->
 </body>
 
 </html>

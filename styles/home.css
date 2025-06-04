@@ -6,23 +6,26 @@
 }
 
 body {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
-    height: 100vh;
+    justify-content: space-between; */
+    min-height: 100vh;
     /* background-color: #fff; */
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/background.jpg);
     background-size: cover;
+    background-repeat: no-repeat;
     background-position: bottom;
 }
 
 .heading {
     padding: 0px 80px;
     width: 100%;
+    height: 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 20px 0px;
 }
 
 .heading a {
@@ -32,9 +35,9 @@ body {
     transition: all .3s;
 }
 
-.heading a:hover {
+/* .heading a:hover {
     transform: scale(0.9);
-}
+} */
 
 
 h1 {
@@ -57,36 +60,31 @@ button {
 
 button:hover {
     background-color: #0000006f;
-    transform: scale(0.9);
 }
 
 .container {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 30px;
     justify-content: space-around;
     width: 100%;
-    height: 60%;
+    height: 100%;
 }
 
 .inner-container {
     /* border: 1px solid #000; */
     width: 350px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .2);
+    min-height: 100px;
     border-radius: 10px;
     box-shadow: 1px 1px 5px 1px #000000;
     padding: 10px 5px;
-    border: 4px solid #eae1e1;
-
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, .2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* #inprogress {
-    background-color: #baf3db;
-}
-
-#completed {
-    background-color: #f1f2f4;
-} */
 
 .inner-container h2 {
     text-align: center;
@@ -96,20 +94,33 @@ button:hover {
 }
 
 .blackdrop {
-    position: absolute;
-    height: 100vh;
-    width: 100vw;
+    position: fixed;
+    inset: 0;
+    height: 100%;
+    width: 100%;
     background: rgba(0, 0, 0, .4);
     z-index: 10;
 }
 
-body>div:first-of-type {
-    position: absolute;
+.create {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%);
 }
 
-.pop-up {
+/* body>div:first-of-type {
     position: absolute;
-    background-color: rgba(0, 0, 0, .8);
+} */
+
+.pop-up-tool {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, .2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 20px;
     border-radius: 10px;
     display: flex;
@@ -119,23 +130,19 @@ body>div:first-of-type {
     gap: 20px;
     z-index: 100;
     box-shadow: 1px 1px 10px 1px #000;
-    display: none;
+    transition: all 0.3s ease;
 }
 
-.pop-up input {
+.pop-up-tool input {
     padding: 10px;
     border: none;
     outline: none;
     border-radius: 10px;
 }
 
-.pop-up button {
+.pop-up-tool button {
     background-color: #fff;
     color: #000;
-}
-
-.visible {
-    display: flex;
 }
 
 .todo-item {
@@ -155,10 +162,13 @@ body>div:first-of-type {
     border-radius: 10px;
     box-shadow: 1px 1px 2px 1px #000;
     cursor: pointer;
+    transition: all .3s;
+}
+
+.todo-item li .task-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all .3s;
 }
 
 .todo-item li span {
@@ -166,12 +176,23 @@ body>div:first-of-type {
     gap: 10px;
 }
 
-li:hover {
-    transform: scale(1.2);
+.todo-item li {
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .hidden {
-    display: none;
+    visibility: 0;
+    opacity: 0;
+
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.hidden:nth-child(3),
+.hidden:nth-child(4) {
+    position: fixed;
+    top: 100%;
+    left: 50%;
 }
 
 .dragging {
@@ -184,4 +205,21 @@ li:hover {
 
 .hover:hover {
     transform: scale(1.2);
+}
+
+.subtask {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 5px;
+    margin: 4px 0px;
+    transition: all 0.3s;
+}
+
+.dropdown {
+    max-height: 0px;
+    overflow: hidden;
 }
