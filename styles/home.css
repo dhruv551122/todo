@@ -1,22 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: 'roboto', sans-serif;
 }
 
 body {
-    /* display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between; */
     min-height: 100vh;
-    /* background-color: #fff; */
-    /* background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/background.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: bottom; */
-    background-color: #a78cdd;
+    background: linear-gradient(135deg, #c1d3ff, #a78cdd);
 }
 
 .heading {
@@ -36,10 +29,18 @@ body {
     transition: all .3s;
 }
 
+.heading a:hover {
+    color: #34415f;
+}
+
+.heading a:active {
+    transform: scale(0.9);
+}
+
 h1 {
     color: #fff;
+    -webkit-text-stroke: 1px #000;
     font-size: 50px;
-    /* opacity: 0.5; */
 }
 
 button {
@@ -70,35 +71,48 @@ button:hover {
     height: 100%;
 }
 
+@keyframes glowCard {
+    0% {
+        box-shadow: 0 0 8px rgba(167, 140, 221, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(167, 140, 221, 0.7);
+    }
+
+    100% {
+        box-shadow: 0 0 8px rgba(167, 140, 221, 0.3);
+    }
+}
+
 .inner-container {
-    /* border: 1px solid #000; */
     width: 350px;
     min-height: 100px;
     border-radius: 10px;
-    box-shadow: 1px 1px 5px 1px #000000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 10px 10px;
-    /* backdrop-filter: blur(10px); */
-    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+    border: 1px solid rgba(167, 140, 221, 0.2);
     text-align: center;
+    transition: all 0.3 ease;
+    animation: glowCard .3s;
 }
 
 #inQueue {
-    background-color: #f7d79f;
+    background: linear-gradient(135deg, #f7d79f, #fff0cc);
 }
 
 #inprogress {
-    background-color: #baf3db;
+    background: linear-gradient(135deg, #baf3db, #e8fff4);
 }
 
 #completed {
-    background-color: #f1f2f4;
+    background: linear-gradient(135deg, #f1f2f4, #ffffff);
 }
 
 .inner-container h2 {
     text-align: center;
-    /* opacity: 0.75; */
     margin-bottom: 20px;
-    color: #000;
+    color: #34415f;
 }
 
 .blackdrop {
@@ -113,10 +127,6 @@ button:hover {
 .create {
     margin: 10px 0px;
 }
-
-/* body>div:first-of-type {
-    position: absolute;
-} */
 
 .pop-up-tool {
     position: fixed;
@@ -163,10 +173,25 @@ button:hover {
     align-items: center;
     gap: 5px;
     width: 100%;
-    /* transform: translateZ(-20px); */
-    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.1),
+        inset 0 0 6px rgba(0, 0, 0, 0.2);
     padding: 15px;
     border-radius: 5px;
+}
+
+.inner-container button {
+    width: 100%;
+    background-color: #34415f;
+    color: #fff;
+}
+
+.inner-container button:hover {
+    background-color: #222b3f;
+}
+
+button:active {
+    transform: scale(0.96);
 }
 
 .todo-item li {
@@ -181,19 +206,14 @@ button:hover {
     color: #34415f;
 }
 
-/* .todo-item li:nth-child(odd) {
-    background-color: #e2bf84;
+.todo-item li:hover {
+    box-shadow: inset 1px 1px 1px 1px #000;
 }
-
-.todo-item li:nth-child(even) {
-    background-color: #83d074;
-} */
 
 .todo-item li p {
     max-width: 90%;
     overflow-wrap: break-word;
     text-align: left;
-    /* adds ... */
 }
 
 .pencil {
@@ -251,8 +271,6 @@ button:hover {
     border-radius: 5px;
 }
 
-
-
 .edit-buttons a {
     background-color: #f1f2f4;
     padding: 5px;
@@ -273,11 +291,6 @@ button:hover {
     justify-content: space-between;
 }
 
-
-/* .todo-item li {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-} */
-
 .hidden {
     display: none;
     opacity: 0;
@@ -285,21 +298,17 @@ button:hover {
     transition: all 0.3s ease;
 }
 
-/* .hidden:nth-child(3),
-.hidden:nth-child(4) {
-    position: fixed;
-    top: 100%;
-    left: 50%;
-} */
-
 .dragging {
-    background-color: rgba(0, 0, 0, .4);
+    border: 1px solid #174dca;
 }
 
 .bi-caret-down-fill {
     display: inline-block;
-    /* Required for transform to work */
     transition: transform 0.3s ease;
+}
+
+.bi-caret-down-fill:hover {
+    color: #8fb1f0;
 }
 
 .rotate {

@@ -107,7 +107,6 @@ function addSubTask(id) {
 
 function handleSubtaskvisibility(e) {
     const id = this.dataset.id
-    console.log(this)
     this.classList.toggle('rotate')
     const todo = usertodos?.todos?.find(todo => todo.id === Number(id))
     const subtasks = todo.subTask
@@ -139,7 +138,6 @@ function renderSubTask(parentid, id, subTask, isChecked) {
     div.append(checkbox)
     div.append(label)
     const li = document.getElementById(`${parentid}`)
-    console.log(li)
     li.append(div)
 }
 
@@ -174,10 +172,6 @@ function handelEditPopup(e) {
     const rect = this.getBoundingClientRect()
     const x = rect.left
     const y = rect.top
-    console.dir(this)
-    if ((window.innerWidth - x) < 300) {
-        console.log('yes')
-    }
     const input = nextSibling.querySelector('textarea')
     const subtaskBtn = nextSibling.querySelector('.add-subtask')
     console.log(subtaskBtn)
@@ -193,7 +187,6 @@ function handelEditPopup(e) {
             return
         } else if (ev.target !== input) {
             const updatedText = input.value.trim()
-            console.dir(li.querySelector('p'))
             if (updatedText && todo.todo !== updatedText) {
                 console.dir(li.querySelector('p'))
                 li.querySelector('p').querySelector('i').nextSibling.textContent = updatedText
@@ -295,8 +288,7 @@ innerContainers.forEach(innerContainer => {
         }
     })
     ul.addEventListener('dragleave', function (e) {
-        console.log(e.target)
-        if (e.target.closest('ul') !== ul) {
+        if (e.relatedTarget.closest('ul') !== ul) {
             e.currentTarget.classList.remove('dragging')
         }
     })
