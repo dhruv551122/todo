@@ -5,17 +5,20 @@ if (!currentUser || !currentUser?.isLoggedIn) {
 }
 document.body.classList.remove('hidden')
 
+import { nav } from "./nav.js";
+document.body.insertAdjacentElement('afterbegin', nav)
 
 const btns = document.querySelectorAll('.create')
-const blackdrop = document.querySelector('div:first-of-type')
+const blackdrop = document.querySelector('.blackdrop')
 const popUp = document.querySelector('.pop-up')
 const todoEl = popUp.querySelector('input')
 const addBtn = popUp.querySelector('.add')
-// const editBtn = popUp.querySelector('.edit')
 const subBtn = popUp.querySelector('.sub')
 const logoutBtn = document.querySelector('.logout')
 const innerContainers = document.querySelectorAll('.inner-container')
-const popUpSub = document.querySelector('.pop-up-subtask')
+const profileIcon = document.querySelector('.bi-person-circle')
+const profileTab = document.querySelector('.user-profile')
+
 
 const allTodos = JSON.parse(localStorage.getItem('todo')) || []
 const usertodos = allTodos?.find(user => user.id === currentUser.id)
@@ -42,6 +45,20 @@ usertodos?.todos?.forEach(element => {
 function toggle() {
     blackdrop.classList.toggle('hidden')
 }
+
+profileIcon.addEventListener('click', () => {
+    profileTab.classList.remove('hidden')
+    toggle()
+    document.removeEventListener('click', handleProfile)
+    function handleProfile(e) {
+        if (e.target !== profileTab) {
+            profileTab.classList.add('hidden')
+            document.removeEventListener('click', handleProfile)
+        }
+    }
+
+    setTimeout(() => document.addEventListener('click', handleProfile), 0)
+})
 
 function openPopUp() {
     popUp.classList.remove('hidden')
