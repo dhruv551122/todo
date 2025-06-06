@@ -31,7 +31,7 @@ function validateLogin(e) {
     usernameEl.value = ''
     passwordEl.value = ''
     document.body.innerHTML = 'loading...'
-    location.href = 'home.html'
+    location.href = 'index.html'
 }
 
 btn.addEventListener('click', validateLogin)
