@@ -1,5 +1,6 @@
 const currentUser = JSON.parse(localStorage.getItem('currentUser'))
 if (!currentUser || !currentUser?.isLoggedIn) {
+    document.body.innerHTML = 'loading...'
     location.href = 'login.html'
 }
 document.body.classList.remove('hidden')
