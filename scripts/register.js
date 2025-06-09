@@ -1,5 +1,5 @@
-import { removeError, showError } from "./showError.js"
-
+import { checkUserEmail, checkUserUsername, checkUserPassword } from './checkUserData.js';
+import { showError, removeError } from './showError.js';
 const firstNameEl = document.querySelector('input[name="first-name"]')
 const lastNameEl = document.querySelector('input[name="last-name"]')
 const usernameEl = document.querySelector('input[name="username"]')
@@ -9,6 +9,7 @@ const passwordEl = document.querySelector('input[name="password"]')
 const cPasswordEl = document.querySelector('input[name="confirm-password"]')
 const btn = document.querySelector('button')
 const errorDiv = document.querySelectorAll('.error-msg')
+const pageInputs = document.querySelectorAll('input')
 
 
 const users = JSON.parse(localStorage.getItem('users')) || []
@@ -41,49 +42,18 @@ function storeDataToLocalStorage(e) {
                 removeError(error, input)
             }
         })
-        return
+    } else {
+        pageInputs.forEach(pageInput => removeError(pageInput.nextElementSibling, pageInput))
     }
 
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showError(emailError, emailEl, '*Please eneter valid email!')
+    if (!checkUserEmail(email, emailError, emailEl)) {
         return
-    } else {
-        removeError(emailError, emailEl)
     }
-    const emailAlreadyExist = users.find(user => user.email === email)
-    if (emailAlreadyExist) {
-        showError(emailError, emailEl, '*Email already registered!')
+    if (!checkUserUsername(username, usernameError, usernameEl)) {
         return
-    } else {
-        removeError(emailError, emailEl)
     }
-    if (/[^a-zA-Z0-9_]/.test(username)) {
-        showError(usernameError, usernameEl, '*Characters, numbers and _ are only allowed for username field!')
+    if (!checkUserPassword(password, cPassword, passwordError, passwordEl, cPasswordErorr, cPasswordEl)) {
         return
-    } else {
-        removeError(usernameError, usernameEl)
-    }
-    const usernameAlreadyExist = users.find(user => user.username === username)
-    if (usernameAlreadyExist) {
-        showError(usernameError, usernameEl, '*User with same username already exists, please choose another username')
-        return
-    } else {
-        removeError(usernameError, usernameEl)
-    }
-    if (username.length < 8) {
-        showError(usernameError, usernameEl, '*Username must be 8 character long!')
-        return
-    } else {
-        removeError(usernameError, usernameEl)
-    }
-    if (password !== cPassword) {
-        showError(passwordError, passwordEl, "*Both password doesn't matching!")
-        showError(cPasswordErorr, cPasswordEl, "*Both password doesn't matching!")
-        return
-    } else {
-        removeError(passwordError, passwordEl)
-        removeError(cPasswordErorr, cPasswordEl)
     }
 
     const user = {

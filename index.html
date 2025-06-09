@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="./img/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
         defer>
+    <link rel="stylesheet" href="./styles/user-profile.css">
     <link rel="stylesheet" href="./styles/home.css">
     <script src="./scripts/home.js" defer type="module"></script>
 </head>
@@ -20,12 +21,88 @@
     <div class="blackdrop hidden"></div>
     <div class="user-profile hidden">
         <div class="username-tab">
-            <div class="user-icon"></div>
+            <div class="user-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="size-6">
+                    <path fill-rule="evenodd"
+                        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
             <div class="profile-name">
-                <p class="profile-fullname"></p>
-                <p class="profile-username"></p>
+                <p class="profile-fullname">Dhruv Thummar</p>
+                <p class="profile-username">@dvthummar</p>
             </div>
         </div>
+
+        <div class="user-details">
+            <div>
+                <div class="user-detail user-firstName">
+                    <form>
+                        <label for="user-firstName">First Name</label>
+                        <input id="user-firstName" type="text" readonly autocomplete="off">
+                    </form>
+                    <div class="edit-buttons">
+                        <i class="bi bi-pencil-square" data-id="firstName"></i>
+                        <button class="save-button firstName-save-btn" data-id="firstName">Save</button>
+                    </div>
+                </div>
+                <p class='error-firstName error'></p>
+            </div>
+            <div>
+                <div class="user-detail user-lastName">
+                    <form>
+                        <label for="user-lastName">Last name</label>
+                        <input id="user-lastName" type="text" readonly autocomplete="off">
+                    </form>
+                    <div class="edit-buttons">
+                        <i class="bi bi-pencil-square" data-id="lastName"></i>
+                        <button class="save-button lastName-save-btn" data-id="lastName">Save</button>
+                    </div>
+                </div>
+                <p class='error-lastName error'></p>
+            </div>
+            <div>
+                <div class="user-detail user-username">
+                    <form>
+                        <label for="user-username">Username</label>
+                        <input id="user-username" type="text" readonly autocomplete="off">
+                    </form>
+                    <div class="edit-buttons">
+                        <i class="bi bi-pencil-square" data-id="username"></i>
+                        <button class="save-button username-save-btn" data-id="username">Save</button>
+                    </div>
+                </div>
+                <p class='error-username error'></p>
+            </div>
+            <div>
+                <div class="user-detail user-email">
+                    <form>
+                        <label for="user-email">Email</label>
+                        <input id="user-email" type="text" readonly autocomplete="off">
+                    </form>
+                    <div class="edit-buttons">
+                        <i class="bi bi-pencil-square" data-id="email"></i>
+                        <button class="save-button email-save-btn" data-id="email">Save</button>
+                    </div>
+                </div>
+                <p class='error-email error'></p>
+            </div>
+            <div>
+                <div class="user-detail user-dob">
+                    <form>
+                        <label for="user-dob">Date of Birth</label>
+                        <input id="user-dob" type="date" readonly autocomplete="off">
+                    </form>
+                    <div class="edit-buttons">
+                        <i class="bi bi-pencil-square" data-id="dob"></i>
+                        <button class="save-button dob-save-btn" data-id="dob">Save</button>
+                    </div>
+                </div>
+                <p class='error-dob error'></p>
+            </div>
+
+        </div>
+        <div class="success-msg">saved successfully</div>
     </div>
     <div class="container">
         <div id="inQueue" class="inner-container">

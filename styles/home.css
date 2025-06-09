@@ -40,17 +40,6 @@ body {
     cursor: pointer;
 }
 
-.user-profile {
-    min-width: 30%;
-    min-height: 100%;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 200;
-    filter: blur(10px);
-    background: rgba(0, 0, 0, .5);
-}
-
 .header .back {
     cursor: pointer;
     color: #222b3f;
@@ -163,6 +152,7 @@ button:hover {
     width: 100%;
     background: rgba(0, 0, 0, .4);
     z-index: 10;
+
 }
 
 .create {
@@ -200,7 +190,7 @@ button:hover {
     border-radius: 10px;
 }
 
-input:focus {
+.pop-up-tool input:focus {
     border: 2px solid #174dca;
 }
 
@@ -327,7 +317,7 @@ input:focus {
     display: none;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.3s ease;
+    /* transition: all 0.3s ease; */
 }
 
 .dragging {
@@ -379,4 +369,10 @@ input:focus {
     margin: 0px;
     background-color: #fff;
     color: #fff;
+}
+
+@media (max-width:500px) {
+    .heading {
+        font-size: 30px;
+    }
 }

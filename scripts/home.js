@@ -1,4 +1,8 @@
+import { showErrorUserProfile, removeErrorUserProfile } from './showError.js'
+import { checkUserEmail, checkUserPassword, checkUserUsername } from './checkUserData.js'
+
 const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+console.log(currentUser.username)
 if (!currentUser || !currentUser?.isLoggedIn) {
     document.body.innerHTML = 'loading...'
     location.href = 'login.html'
@@ -18,8 +22,16 @@ const logoutBtn = document.querySelector('.logout')
 const innerContainers = document.querySelectorAll('.inner-container')
 const profileIcon = document.querySelector('.bi-person-circle')
 const profileTab = document.querySelector('.user-profile')
+const profileFullname = document.querySelector('.profile-fullname')
+const profileUsername = document.querySelector('.profile-username')
+const profileEmail = document.querySelector('.user-email')
+const profiledob = document.querySelector('.user-dob')
+const userDetails = document.querySelectorAll('.user-detail')
+const saveBtns = document.querySelectorAll('.save-button')
 
+const darggedId = null
 
+const users = JSON.parse(localStorage.getItem('users'))
 const allTodos = JSON.parse(localStorage.getItem('todo')) || []
 const usertodos = allTodos?.find(user => user.id === currentUser.id)
 usertodos?.todos?.forEach(element => {
@@ -41,24 +53,126 @@ usertodos?.todos?.forEach(element => {
     })
 });
 
+function isMobileDevice() {
+    console.log('mobile')
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0
+
+}
+
+
+profileFullname.textContent = `${currentUser.firstName} ${currentUser.lastName}`
+profileUsername.textContent = `@${currentUser.username}`
+// profileEmail.querySelector('input').value = `${currentUser.email}`
+// profiledob.querySelector('input').value = `${currentUser.dob}`
+userDetails.forEach(userDetail => {
+    const userDetailEditBtn = userDetail.querySelector('.bi-pencil-square')
+    const input = userDetail.querySelector('input')
+    const userKey = input.id.split('-')[1]
+    input.value = currentUser[userKey]
+    userDetailEditBtn.addEventListener('click', editUserDetailHandler)
+})
+
+saveBtns.forEach(saveBtn => {
+    saveBtn.addEventListener('click', checkUserDetail)
+})
+
+function editUserDetailHandler() {
+    const id = this.dataset.id
+    const input = document.getElementById(`user-${id}`)
+    const container = input.closest('.user-detail')
+    const saveBtn = document.querySelector(`.${id}-save-btn`)
+    const errorDiv = document.querySelector(`.error-${id}`)
+    saveBtn.style.visibility = 'visible'
+    input.removeAttribute('readonly')
+    input.focus()
+    container.style.border = '1px solid #174dca'
+    document.removeEventListener('click', removeFocus)
+    function removeFocus(e) {
+        if (!container.contains(e.target) && e.target !== saveBtn) {
+            saveBtn.style.visibility = 'hidden'
+            input.setAttribute('readonly', 'true')
+            input.closest('.user-detail').style.border = '1px solid transparent'
+            document.removeEventListener('click', removeFocus)
+            errorDiv.style.visibility = 'hidden'
+            input.value = currentUser[id]
+        }
+    }
+
+    setTimeout(() => document.addEventListener('click', removeFocus), 0)
+}
+
+function checkUserDetail() {
+    const id = this.dataset.id
+    const userDetail = document.querySelector(`.user-${id}`)
+    const errorDiv = document.querySelector(`.error-${id}`)
+    const input = document.getElementById(`user-${id}`)
+    const inputValue = input.value.trim()
+
+    if (id === 'email') {
+        if (!checkUserEmail(inputValue, errorDiv, userDetail)) {
+            return
+        }
+    }
+    if (id === 'username') {
+        if (!checkUserUsername(inputValue, errorDiv, userDetail)) {
+            return
+        }
+    }
+    saveUserDetail(id, inputValue)
+    showSuccessMsg()
+}
+
+function saveUserDetail(id, inputValue) {
+    const user = users.find(user => user.id === currentUser.id)
+    user[id] = inputValue
+    currentUser[id] = inputValue
+    localStorage.setItem('users', JSON.stringify(users))
+    localStorage.setItem('currentUser', JSON.stringify(currentUser))
+}
+
+function showSuccessMsg() {
+    const successMsg = document.querySelector('.success-msg')
+    successMsg.style.opacity = '0.8'
+    setTimeout(() => successMsg.style.opacity = '0', 1000)
+}
 
 function toggle() {
     blackdrop.classList.toggle('hidden')
 }
 
-profileIcon.addEventListener('click', () => {
-    profileTab.classList.remove('hidden')
-    toggle()
-    document.removeEventListener('click', handleProfile)
-    function handleProfile(e) {
-        if (e.target !== profileTab) {
-            profileTab.classList.add('hidden')
-            document.removeEventListener('click', handleProfile)
-        }
-    }
+let hideTimeout;
 
-    setTimeout(() => document.addEventListener('click', handleProfile), 0)
-})
+profileIcon.addEventListener('mouseenter', () => {
+    clearTimeout(hideTimeout);
+    profileTab.classList.remove('hidden');
+    profileTab.classList.remove('hide');
+    toggle();
+});
+
+profileIcon.addEventListener('mouseleave', () => {
+    scheduleHide();
+});
+
+profileTab.addEventListener('mouseenter', () => {
+    clearTimeout(hideTimeout);
+});
+
+profileTab.addEventListener('mouseleave', () => {
+    scheduleHide();
+});
+
+function scheduleHide() {
+    hideTimeout = setTimeout(() => {
+        profileTab.classList.add('hide');
+        toggle();
+    }, 200);
+}
+
+profileTab.addEventListener('transitionend', () => {
+    if (profileTab.classList.contains('hide')) {
+        profileTab.classList.add('hidden');
+    }
+});
 
 function openPopUp() {
     popUp.classList.remove('hidden')
@@ -108,6 +222,8 @@ function handleDrag(e) {
     setTimeout(() => {
         this.style.display = 'none'
     }, 0)
+    console.log('yes')
+
 }
 
 function addSubTask(id) {
@@ -246,10 +362,19 @@ function renderToDo(todo) {
             </div>
         </div>
     `
-    li.addEventListener('dragstart', handleDrag)
-    li.addEventListener('dragend', function () {
-        this.style.display = 'block'
-    })
+    if (isMobileDevice()) {
+
+        li.addEventListener('touchstart', handleDrag)
+        li.addEventListener('touchend', function () {
+            this.style.display = 'block'
+        })
+    } else {
+        li.addEventListener('dragstart', handleDrag)
+        li.addEventListener('dragend', function () {
+            this.style.display = 'block'
+        })
+    }
+
     const pencil = li.querySelector('.pencil')
     pencil.dataset.id = todo.id
     const deleteBtn = li.querySelector('.delete-todo')
@@ -296,20 +421,39 @@ function handleDropEvent(e) {
 innerContainers.forEach(innerContainer => {
     const ul = innerContainer.querySelector('ul')
     ul.dataset.status = innerContainer.id
-    ul.addEventListener('dragover', function (e) {
-        e.preventDefault()
-    })
-    ul.addEventListener('drop', handleDropEvent)
-    ul.addEventListener('dragenter', function (e) {
-        if (ul.contains(e.target)) {
-            e.currentTarget.classList.add('dragging')
-        }
-    })
-    ul.addEventListener('dragleave', function (e) {
-        if (e.relatedTarget.closest('ul') !== ul) {
-            e.currentTarget.classList.remove('dragging')
-        }
-    })
+    if (isMobileDevice()) {
+        ul.addEventListener('touchmove', function (e) {
+            e.preventDefault()
+
+            const touch = e.touches[0]
+            const target = document.elementFromPoint(touch.clientX, touch.clientY)
+            const dropzone = target?.closest('ul')
+
+            if (dropzone === ul) {
+                ul.classList.add('dragging')
+            } else {
+                ul.classList.remove('dragging')
+            }
+        })
+
+        ul.addEventListener('touchend', handleDropEvent)
+    } else {
+        ul.addEventListener('dragover', function (e) {
+            e.preventDefault()
+        })
+        ul.addEventListener('drop', handleDropEvent)
+        ul.addEventListener('dragenter', function (e) {
+            if (ul.contains(e.target)) {
+                e.currentTarget.classList.add('dragging')
+            }
+        })
+        ul.addEventListener('dragleave', function (e) {
+            if (e.relatedTarget.closest('ul') !== ul) {
+                e.currentTarget.classList.remove('dragging')
+            }
+        })
+    }
+
 })
 
 btns.forEach(btn => {

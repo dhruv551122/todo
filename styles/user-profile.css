@@ -1,0 +1,142 @@
+@keyframes user-profile-an {
+    from {
+        transform: translateX(200px);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.user-profile {
+    min-width: 300px;
+    min-height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 200;
+    background: linear-gradient(180deg, #baf3db, #a78cdd);
+    box-shadow: 3px 3px 10px 3px #000;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 100px;
+    opacity: 1;
+    transition: all .3s;
+    animation: user-profile-an .3s;
+    cursor: pointer;
+    transform: none;
+}
+
+.hide {
+    transform: translateX(100%);
+    pointer-events: none;
+}
+
+.username-tab {
+    color: #222b3f;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.profile-username {
+    font-size: 12px;
+}
+
+.user-details {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.user-detail {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px 0px 0px 5px;
+    background-color: #f1f2f4;
+    color: #a5a5a5;
+    line-height: 20px;
+    font-size: 12px;
+    border: 1px solid transparent;
+}
+
+.user-detail input {
+    outline: none;
+    border: none;
+    background-color: #f1f2f4;
+    min-width: 300px;
+}
+
+.user-detail form {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-detail button {
+    padding: 5px;
+    font-size: 10px;
+    visibility: hidden;
+    transition: all 0s;
+}
+
+.user-detail span {
+    font-size: 15px;
+    color: #222b3f;
+}
+
+.user-detail .edit-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.user-detail .bi-pencil-square {
+    font-size: 15px;
+}
+
+.user-detail .bi-pencil-square:hover {
+    color: #34415f;
+}
+
+.error {
+    visibility: hidden;
+    color: #c20404;
+    font-size: 10px;
+    height: 10px;
+}
+
+.success-msg {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+    opacity: 0;
+    transition: all .3s;
+}
+
+@media (max-width:450px) {
+    .user-profile {
+        min-width: 150px;
+    }
+
+    .user-detail form input {
+        min-width: 200px;
+    }
+}
