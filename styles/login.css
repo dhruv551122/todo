@@ -135,3 +135,9 @@ a:hover {
 #email {
     width: 100%;
 }
+
+@media (max-width:870px) {
+    .img {
+        display: none;
+    }
+}

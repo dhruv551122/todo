@@ -27,7 +27,7 @@ export function checkUserUsername(username, usernameError, usernameEl) {
     }
     const usernameAlreadyExist = users.find(user => user.username === username)
     if (usernameAlreadyExist) {
-        showError(usernameError, usernameEl, '*User with same username already exists, please choose another username')
+        showError(usernameError, usernameEl, '*User exists, please choose another username')
         return false
     } else {
         removeError(usernameError, usernameEl)

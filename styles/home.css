@@ -13,6 +13,10 @@ body {
     padding-bottom: 20px;
 }
 
+body::-webkit-scrollbar {
+    display: none;
+}
+
 .header {
     position: fixed;
     top: 0;
@@ -42,11 +46,16 @@ body {
 
 .header .back {
     cursor: pointer;
-    color: #222b3f;
     text-decoration: none;
     font-size: 18px;
     transition: all .3s;
 }
+
+.header .back a {
+    text-decoration: none;
+    color: #222b3f;
+}
+
 
 .header .back:hover {
     color: #34415f;
@@ -64,7 +73,6 @@ body {
 
 h1 {
     color: #fff;
-    -webkit-text-stroke: 1px #000;
     font-size: 50px;
 }
 
@@ -165,7 +173,7 @@ button:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, .2);
+    background: rgba(0, 0, 0, .4);
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 20px;
     border-radius: 10px;
@@ -188,10 +196,15 @@ button:hover {
     border: none;
     outline: none;
     border-radius: 10px;
+    border: 2px solid transparent;
+}
+
+.pop-up-tool button {
+    background-color: #a78cdd;
 }
 
 .pop-up-tool input:focus {
-    border: 2px solid #174dca;
+    border: 2px solid #648eef;
 }
 
 .todo-item {
@@ -222,7 +235,7 @@ button:hover {
     padding: 5px;
     border-radius: 10px;
     box-shadow: 1px 1px 2px 1px #000;
-    cursor: pointer;
+    cursor: grab;
     transition: all .3s;
     background-color: #fff;
     color: #34415f;
@@ -243,6 +256,7 @@ button:hover {
     top: 5px;
     right: 5px;
     transition: all .3s;
+    cursor: pointer;
 }
 
 .pencil:hover {
@@ -317,7 +331,6 @@ button:hover {
     display: none;
     opacity: 0;
     pointer-events: none;
-    /* transition: all 0.3s ease; */
 }
 
 .dragging {
@@ -327,6 +340,7 @@ button:hover {
 .bi-caret-down-fill {
     display: inline-block;
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .bi-caret-down-fill:hover {
@@ -354,7 +368,7 @@ button:hover {
     padding: 5px;
     border-radius: 5px;
     margin: 4px 0px;
-    transition: all 0.3s;
+    transition: all .3s;
 }
 
 .dropdown {
@@ -363,12 +377,8 @@ button:hover {
 }
 
 .animation-height {
-    max-height: 0px;
-    overflow: hidden;
-    padding: 0px;
-    margin: 0px;
-    background-color: #fff;
-    color: #fff;
+    transform: translateY(-100%);
+    display: none;
 }
 
 @media (max-width:500px) {

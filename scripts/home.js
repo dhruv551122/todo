@@ -1,8 +1,8 @@
-import { showErrorUserProfile, removeErrorUserProfile } from './showError.js'
+import { showError, removeError } from './showError.js'
 import { checkUserEmail, checkUserPassword, checkUserUsername } from './checkUserData.js'
 
 const currentUser = JSON.parse(localStorage.getItem('currentUser'))
-console.log(currentUser.username)
+console.log(currentUser)
 if (!currentUser || !currentUser?.isLoggedIn) {
     document.body.innerHTML = 'loading...'
     location.href = 'login.html'
@@ -24,12 +24,13 @@ const profileIcon = document.querySelector('.bi-person-circle')
 const profileTab = document.querySelector('.user-profile')
 const profileFullname = document.querySelector('.profile-fullname')
 const profileUsername = document.querySelector('.profile-username')
-const profileEmail = document.querySelector('.user-email')
-const profiledob = document.querySelector('.user-dob')
 const userDetails = document.querySelectorAll('.user-detail')
 const saveBtns = document.querySelectorAll('.save-button')
+const changePass = document.querySelector('.change-password')
+const editPassDiv = document.querySelector('.edit-password')
+const passwordSaveBtn = document.querySelector('.password-change-btn')
 
-const darggedId = null
+let draggedEleId = null
 
 const users = JSON.parse(localStorage.getItem('users'))
 const allTodos = JSON.parse(localStorage.getItem('todo')) || []
@@ -53,17 +54,8 @@ usertodos?.todos?.forEach(element => {
     })
 });
 
-function isMobileDevice() {
-    console.log('mobile')
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0
-
-}
-
-
 profileFullname.textContent = `${currentUser.firstName} ${currentUser.lastName}`
 profileUsername.textContent = `@${currentUser.username}`
-// profileEmail.querySelector('input').value = `${currentUser.email}`
-// profiledob.querySelector('input').value = `${currentUser.dob}`
 userDetails.forEach(userDetail => {
     const userDetailEditBtn = userDetail.querySelector('.bi-pencil-square')
     const input = userDetail.querySelector('input')
@@ -76,28 +68,37 @@ saveBtns.forEach(saveBtn => {
     saveBtn.addEventListener('click', checkUserDetail)
 })
 
-function editUserDetailHandler() {
+function editUserDetailHandler(e) {
     const id = this.dataset.id
     const input = document.getElementById(`user-${id}`)
     const container = input.closest('.user-detail')
+    console.log(container)
     const saveBtn = document.querySelector(`.${id}-save-btn`)
     const errorDiv = document.querySelector(`.error-${id}`)
+    let isMouseDown = null
     saveBtn.style.visibility = 'visible'
     input.removeAttribute('readonly')
     input.focus()
     container.style.border = '1px solid #174dca'
     document.removeEventListener('click', removeFocus)
-    function removeFocus(e) {
-        if (!container.contains(e.target) && e.target !== saveBtn) {
-            saveBtn.style.visibility = 'hidden'
-            input.setAttribute('readonly', 'true')
-            input.closest('.user-detail').style.border = '1px solid transparent'
-            document.removeEventListener('click', removeFocus)
-            errorDiv.style.visibility = 'hidden'
-            input.value = currentUser[id]
+    function removeFocus(ev) {
+        if (!isMouseDown) {
+            if (!container.contains(ev.target) && ev.target !== saveBtn) {
+                saveBtn.style.visibility = 'hidden'
+                input.setAttribute('readonly', 'true')
+                input.closest('.user-detail').style.border = '1px solid transparent'
+                document.removeEventListener('click', removeFocus)
+                errorDiv.style.visibility = 'hidden'
+                input.value = currentUser[id]
+            }
         }
     }
-
+    function mouseDownHandel(evt) {
+        isMouseDown = container.contains(evt.target)
+    }
+    setTimeout(() => {
+        document.addEventListener('mousedown', mouseDownHandel)
+    }, 0)
     setTimeout(() => document.addEventListener('click', removeFocus), 0)
 }
 
@@ -107,7 +108,12 @@ function checkUserDetail() {
     const errorDiv = document.querySelector(`.error-${id}`)
     const input = document.getElementById(`user-${id}`)
     const inputValue = input.value.trim()
-
+    if (!inputValue) {
+        showError(errorDiv, userDetail, `*${id.charAt(0).toUpperCase() + id.slice(1).toLowerCase()} is required`)
+        return
+    } else {
+        removeError(errorDiv, userDetail)
+    }
     if (id === 'email') {
         if (!checkUserEmail(inputValue, errorDiv, userDetail)) {
             return
@@ -119,7 +125,7 @@ function checkUserDetail() {
         }
     }
     saveUserDetail(id, inputValue)
-    showSuccessMsg()
+    showSuccessMsg(`${id.charAt(0).toUpperCase() + id.slice(1).toLowerCase()} saved successfully`)
 }
 
 function saveUserDetail(id, inputValue) {
@@ -130,9 +136,10 @@ function saveUserDetail(id, inputValue) {
     localStorage.setItem('currentUser', JSON.stringify(currentUser))
 }
 
-function showSuccessMsg() {
+function showSuccessMsg(str = 'Successfully saved') {
     const successMsg = document.querySelector('.success-msg')
-    successMsg.style.opacity = '0.8'
+    successMsg.textContent = str
+    successMsg.style.opacity = '1'
     setTimeout(() => successMsg.style.opacity = '0', 1000)
 }
 
@@ -140,39 +147,67 @@ function toggle() {
     blackdrop.classList.toggle('hidden')
 }
 
-let hideTimeout;
+function removeScrolling() {
+    document.body.style.overflow = 'hidden'
+}
 
-profileIcon.addEventListener('mouseenter', () => {
-    clearTimeout(hideTimeout);
+function addScrolling() {
+    document.body.style.overflow = ''
+}
+
+profileIcon.addEventListener('click', (e) => {
+    e.stopPropagation()
     profileTab.classList.remove('hidden');
     profileTab.classList.remove('hide');
     toggle();
 });
 
-profileIcon.addEventListener('mouseleave', () => {
-    scheduleHide();
+let mouseDownInside = null
+document.addEventListener('mousedown', e => {
+    mouseDownInside = profileTab.contains(e.target) || profileIcon.contains(e.target);
 });
 
-profileTab.addEventListener('mouseenter', () => {
-    clearTimeout(hideTimeout);
-});
+document.addEventListener('click', handelProfileVisibility)
 
-profileTab.addEventListener('mouseleave', () => {
-    scheduleHide();
-});
-
-function scheduleHide() {
-    hideTimeout = setTimeout(() => {
-        profileTab.classList.add('hide');
-        toggle();
-    }, 200);
+function handelProfileVisibility(e) {
+    if (!profileTab.classList.contains('hide')) {
+        if (e.target.closest('.user-profile') !== profileTab && !mouseDownInside) {
+            scheduleHide()
+            console.log('clicked')
+        }
+    }
 }
 
-profileTab.addEventListener('transitionend', () => {
-    if (profileTab.classList.contains('hide')) {
-        profileTab.classList.add('hidden');
+changePass.addEventListener('click', () => {
+    changePass.classList.add('hidden')
+    editPassDiv.classList.remove('hidden')
+})
+
+passwordSaveBtn.addEventListener('click', () => {
+    const passwordEl = document.getElementById('user-password')
+    let password = passwordEl.value.trim()
+    const cPasswordEl = document.getElementById('user-cPassword')
+    const cPassword = cPasswordEl.value.trim()
+    const passwordError = document.querySelector('.password-error')
+    const cPasswordErorr = document.querySelector('.cPassword-error')
+    if (!checkUserPassword(password, cPassword, passwordError, passwordEl, cPasswordErorr, cPasswordEl)) {
+        return
     }
-});
+    if (currentUser.password === password) {
+        showSuccessMsg('Entered password is same as previous password')
+        return
+    }
+    editPassDiv.classList.add('hidden')
+    changePass.classList.remove('hidden')
+    currentUser.password = password
+    localStorage.setItem('currentUser', JSON.stringify(currentUser))
+    showSuccessMsg()
+    password = null
+})
+
+function scheduleHide() {
+    profileTab.classList.add('hide');
+}
 
 function openPopUp() {
     popUp.classList.remove('hidden')
@@ -184,8 +219,8 @@ function openPopUp() {
     const parent = this.parentElement
     addBtn.dataset.status = parent.id
     toggle()
+    removeScrolling()
 }
-
 
 function getTodo() {
     const todo = todoEl.value.trim()
@@ -218,17 +253,19 @@ function getTodo() {
 }
 
 function handleDrag(e) {
-    e.dataTransfer.setData('text/plain', e.target.id)
+    e.dataTransfer.setData('text/plain', this.id)
     setTimeout(() => {
         this.style.display = 'none'
     }, 0)
+    draggedEleId = this.id
+    console.log(draggedEleId)
     console.log('yes')
-
 }
 
 function addSubTask(id) {
     setTimeout(() => {
         toggle()
+        removeScrolling()
     }, 0)
     popUp.classList.remove('hidden')
     popUp.querySelector('h1').textContent = 'Add sub task'
@@ -244,11 +281,9 @@ function handleSubtaskvisibility(e) {
     this.classList.toggle('rotate')
     const todo = usertodos?.todos?.find(todo => todo.id === Number(id))
     const subtasks = todo.subTask
-    console.log(subtasks)
     if (subtasks) {
         subtasks.forEach(subTask => {
             const el = document.getElementById(`subtask-${subTask.id}`)
-            console.log(el)
             el.classList.toggle('animation-height')
         })
     }
@@ -275,10 +310,11 @@ function renderSubTask(parentid, id, subTask, isChecked) {
     li.append(div)
 }
 
-function handelSubTask(e) {
+function handelSubTask() {
     const id = Date.now()
     const subTask = todoEl.value.trim()
     toggle()
+    addScrolling()
     this.classList.add('hidden')
     addBtn.classList.remove('hidden')
     popUp.classList.add('hidden')
@@ -290,6 +326,7 @@ function handelSubTask(e) {
     })
     renderSubTask(this.dataset.id, id, subTask, false)
     localStorage.setItem('todo', JSON.stringify(allTodos))
+    location.reload()
 }
 
 function handelEditPopup(e) {
@@ -300,7 +337,8 @@ function handelEditPopup(e) {
     const li = document.getElementById(`${id}`)
     li.draggable = false
     console.log(window.innerWidth)
-    blackdrop.classList.toggle('hidden')
+    blackdrop.classList.remove('hidden')
+    removeScrolling()
     const parent = this.parentElement
     const nextSibling = parent.nextElementSibling
     const rect = this.getBoundingClientRect()
@@ -329,7 +367,8 @@ function handelEditPopup(e) {
                 localStorage.setItem('todo', JSON.stringify(allTodos))
             }
             li.draggable = true
-            blackdrop.classList.add('hidden');
+            blackdrop.classList.add('hidden')
+            addScrolling()
             nextSibling.classList.add('animation');
             document.removeEventListener('click', handleNextClick)
         }
@@ -342,11 +381,11 @@ function handelEditPopup(e) {
 subBtn.addEventListener('click', handelSubTask)
 
 function renderToDo(todo) {
-    console.log(todo.status)
     const todoItems = document.querySelector(`.${todo.status}`)
     const li = document.createElement('li')
     li.draggable = true
     li.setAttribute('id', `${todo.id}`)
+    li.dataset.status = todo.status
     li.dataset.text = todo.todo
     li.innerHTML = `
         <div class='task-heading'>
@@ -362,18 +401,11 @@ function renderToDo(todo) {
             </div>
         </div>
     `
-    if (isMobileDevice()) {
 
-        li.addEventListener('touchstart', handleDrag)
-        li.addEventListener('touchend', function () {
-            this.style.display = 'block'
-        })
-    } else {
-        li.addEventListener('dragstart', handleDrag)
-        li.addEventListener('dragend', function () {
-            this.style.display = 'block'
-        })
-    }
+    li.addEventListener('dragstart', handleDrag)
+    li.addEventListener('dragend', function () {
+        this.style.display = 'block'
+    })
 
     const pencil = li.querySelector('.pencil')
     pencil.dataset.id = todo.id
@@ -404,56 +436,60 @@ function handleDropEvent(e) {
     const id = e.dataTransfer.getData('text')
     // console.log(id)
     const drag = document.getElementById(`${id}`)
+
     if (!drag) {
         return
     }
-    this.appendChild(drag)
+    if ((drag.dataset.status === 'inQueue' && this.dataset.status === 'completed') || (drag.dataset.status === 'completed' && this.dataset.status === 'inQueue')) {
+        return
+    } else {
+        drag.dataset.status = this?.dataset.status
+        console.log(drag)
+        this.appendChild(drag)
+        const todo = usertodos?.todos?.find(todo => todo.id === Number(id))
+        todo.time = Date.now()
+        todo.status = this.dataset.status
+        usertodos.todos.sort((a, b) => { return a.time - b.time })
+        // console.log(allTodos)
+        localStorage.setItem('todo', JSON.stringify(allTodos))
+    }
     // console.log(usertodos.todos)
-    const todo = usertodos?.todos?.find(todo => todo.id === Number(id))
-    todo.time = Date.now()
-    todo.status = this.dataset.status
-    usertodos.todos.sort((a, b) => { return a.time - b.time })
-    // console.log(allTodos)
-    localStorage.setItem('todo', JSON.stringify(allTodos))
 }
 
 
 innerContainers.forEach(innerContainer => {
     const ul = innerContainer.querySelector('ul')
     ul.dataset.status = innerContainer.id
-    if (isMobileDevice()) {
-        ul.addEventListener('touchmove', function (e) {
-            e.preventDefault()
 
-            const touch = e.touches[0]
-            const target = document.elementFromPoint(touch.clientX, touch.clientY)
-            const dropzone = target?.closest('ul')
+    ul.addEventListener('dragover', function (e) {
+        e.preventDefault()
+        const li = document.getElementById(`${draggedEleId}`)
+        if ((li.dataset.status === 'inQueue' && ul.dataset.status === 'completed') || (li.dataset.status === 'completed' && ul.dataset.status === 'inQueue')) {
+            e.dataTransfer.dropEffect = 'none';
+            e.currentTarget.style.cursor = 'not-allowed';
+        } else {
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.style.cursor = 'pointer';
+        }
+    })
 
-            if (dropzone === ul) {
-                ul.classList.add('dragging')
-            } else {
-                ul.classList.remove('dragging')
-            }
-        })
+    ul.addEventListener('drop', handleDropEvent)
 
-        ul.addEventListener('touchend', handleDropEvent)
-    } else {
-        ul.addEventListener('dragover', function (e) {
-            e.preventDefault()
-        })
-        ul.addEventListener('drop', handleDropEvent)
-        ul.addEventListener('dragenter', function (e) {
-            if (ul.contains(e.target)) {
-                e.currentTarget.classList.add('dragging')
-            }
-        })
-        ul.addEventListener('dragleave', function (e) {
-            if (e.relatedTarget.closest('ul') !== ul) {
-                e.currentTarget.classList.remove('dragging')
-            }
-        })
-    }
+    ul.addEventListener('dragenter', function (e) {
+        const li = document.getElementById(`${draggedEleId}`)
+        console.log(li)
+        if ((li.dataset.status === 'inQueue' && ul.dataset.status === 'completed') || (li.dataset.status === 'completed' && ul.dataset.status === 'inQueue')) {
+            return
+        } else if (ul.contains(e.target)) {
+            e.currentTarget.classList.add('dragging')
+        }
+    })
+    ul.addEventListener('dragleave', function (e) {
 
+        if (e.relatedTarget?.closest('ul') !== ul) {
+            e.currentTarget.classList.remove('dragging')
+        }
+    })
 })
 
 btns.forEach(btn => {
@@ -461,6 +497,7 @@ btns.forEach(btn => {
 })
 blackdrop.addEventListener('click', () => {
     toggle()
+    addScrolling()
     if (!popUp.classList.contains('hidden')) {
         popUp.classList.add('hidden')
     }
