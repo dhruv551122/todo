@@ -1,8 +1,6 @@
-import { showError, removeError } from './showError.js'
-import { checkUserEmail, checkUserPassword, checkUserUsername } from './checkUserData.js'
+
 
 const currentUser = JSON.parse(localStorage.getItem('currentUser'))
-console.log(currentUser)
 if (!currentUser || !currentUser?.isLoggedIn) {
     document.body.innerHTML = 'loading...'
     location.href = 'login.html'
@@ -20,19 +18,9 @@ const addBtn = popUp.querySelector('.add')
 const subBtn = popUp.querySelector('.sub')
 const logoutBtn = document.querySelector('.logout')
 const innerContainers = document.querySelectorAll('.inner-container')
-const profileIcon = document.querySelector('.bi-person-circle')
-const profileTab = document.querySelector('.user-profile')
-const profileFullname = document.querySelector('.profile-fullname')
-const profileUsername = document.querySelector('.profile-username')
-const userDetails = document.querySelectorAll('.user-detail')
-const saveBtns = document.querySelectorAll('.save-button')
-const changePass = document.querySelector('.change-password')
-const editPassDiv = document.querySelector('.edit-password')
-const passwordSaveBtn = document.querySelector('.password-change-btn')
 
 let draggedEleId = null
 
-const users = JSON.parse(localStorage.getItem('users'))
 const allTodos = JSON.parse(localStorage.getItem('todo')) || []
 const usertodos = allTodos?.find(user => user.id === currentUser.id)
 usertodos?.todos?.forEach(element => {
@@ -41,172 +29,27 @@ usertodos?.todos?.forEach(element => {
         renderSubTask(element.id, subtask.id, subtask.text, subtask.checked)
         const div = document.getElementById(`subtask-${subtask.id}`)
         div.addEventListener('click', (e) => {
+            e.stopPropagation()
             const checkbox = div.querySelector("input[type='checkbox']")
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') {
+            if (e.target.tagName === 'INPUT') {
                 subtask.checked = checkbox.checked
                 localStorage.setItem('todo', JSON.stringify(allTodos))
                 return
             }
-            checkbox.checked = !checkbox.checked
-            subtask.checked = checkbox.checked
-            localStorage.setItem('todo', JSON.stringify(allTodos))
         })
     })
 });
 
-profileFullname.textContent = `${currentUser.firstName} ${currentUser.lastName}`
-profileUsername.textContent = `@${currentUser.username}`
-userDetails.forEach(userDetail => {
-    const userDetailEditBtn = userDetail.querySelector('.bi-pencil-square')
-    const input = userDetail.querySelector('input')
-    const userKey = input.id.split('-')[1]
-    input.value = currentUser[userKey]
-    userDetailEditBtn.addEventListener('click', editUserDetailHandler)
-})
-
-saveBtns.forEach(saveBtn => {
-    saveBtn.addEventListener('click', checkUserDetail)
-})
-
-function editUserDetailHandler(e) {
-    const id = this.dataset.id
-    const input = document.getElementById(`user-${id}`)
-    const container = input.closest('.user-detail')
-    console.log(container)
-    const saveBtn = document.querySelector(`.${id}-save-btn`)
-    const errorDiv = document.querySelector(`.error-${id}`)
-    let isMouseDown = null
-    saveBtn.style.visibility = 'visible'
-    input.removeAttribute('readonly')
-    input.focus()
-    container.style.border = '1px solid #174dca'
-    document.removeEventListener('click', removeFocus)
-    function removeFocus(ev) {
-        if (!isMouseDown) {
-            if (!container.contains(ev.target) && ev.target !== saveBtn) {
-                saveBtn.style.visibility = 'hidden'
-                input.setAttribute('readonly', 'true')
-                input.closest('.user-detail').style.border = '1px solid transparent'
-                document.removeEventListener('click', removeFocus)
-                errorDiv.style.visibility = 'hidden'
-                input.value = currentUser[id]
-            }
-        }
-    }
-    function mouseDownHandel(evt) {
-        isMouseDown = container.contains(evt.target)
-    }
-    setTimeout(() => {
-        document.addEventListener('mousedown', mouseDownHandel)
-    }, 0)
-    setTimeout(() => document.addEventListener('click', removeFocus), 0)
-}
-
-function checkUserDetail() {
-    const id = this.dataset.id
-    const userDetail = document.querySelector(`.user-${id}`)
-    const errorDiv = document.querySelector(`.error-${id}`)
-    const input = document.getElementById(`user-${id}`)
-    const inputValue = input.value.trim()
-    if (!inputValue) {
-        showError(errorDiv, userDetail, `*${id.charAt(0).toUpperCase() + id.slice(1).toLowerCase()} is required`)
-        return
-    } else {
-        removeError(errorDiv, userDetail)
-    }
-    if (id === 'email') {
-        if (!checkUserEmail(inputValue, errorDiv, userDetail)) {
-            return
-        }
-    }
-    if (id === 'username') {
-        if (!checkUserUsername(inputValue, errorDiv, userDetail)) {
-            return
-        }
-    }
-    saveUserDetail(id, inputValue)
-    showSuccessMsg(`${id.charAt(0).toUpperCase() + id.slice(1).toLowerCase()} saved successfully`)
-}
-
-function saveUserDetail(id, inputValue) {
-    const user = users.find(user => user.id === currentUser.id)
-    user[id] = inputValue
-    currentUser[id] = inputValue
-    localStorage.setItem('users', JSON.stringify(users))
-    localStorage.setItem('currentUser', JSON.stringify(currentUser))
-}
-
-function showSuccessMsg(str = 'Successfully saved') {
-    const successMsg = document.querySelector('.success-msg')
-    successMsg.textContent = str
-    successMsg.style.opacity = '1'
-    setTimeout(() => successMsg.style.opacity = '0', 1000)
-}
-
-function toggle() {
+export function toggle() {
     blackdrop.classList.toggle('hidden')
 }
 
-function removeScrolling() {
+export function removeScrolling() {
     document.body.style.overflow = 'hidden'
 }
 
-function addScrolling() {
+export function addScrolling() {
     document.body.style.overflow = ''
-}
-
-profileIcon.addEventListener('click', (e) => {
-    e.stopPropagation()
-    profileTab.classList.remove('hidden');
-    profileTab.classList.remove('hide');
-    toggle();
-});
-
-let mouseDownInside = null
-document.addEventListener('mousedown', e => {
-    mouseDownInside = profileTab.contains(e.target) || profileIcon.contains(e.target);
-});
-
-document.addEventListener('click', handelProfileVisibility)
-
-function handelProfileVisibility(e) {
-    if (!profileTab.classList.contains('hide')) {
-        if (e.target.closest('.user-profile') !== profileTab && !mouseDownInside) {
-            scheduleHide()
-            console.log('clicked')
-        }
-    }
-}
-
-changePass.addEventListener('click', () => {
-    changePass.classList.add('hidden')
-    editPassDiv.classList.remove('hidden')
-})
-
-passwordSaveBtn.addEventListener('click', () => {
-    const passwordEl = document.getElementById('user-password')
-    let password = passwordEl.value.trim()
-    const cPasswordEl = document.getElementById('user-cPassword')
-    const cPassword = cPasswordEl.value.trim()
-    const passwordError = document.querySelector('.password-error')
-    const cPasswordErorr = document.querySelector('.cPassword-error')
-    if (!checkUserPassword(password, cPassword, passwordError, passwordEl, cPasswordErorr, cPasswordEl)) {
-        return
-    }
-    if (currentUser.password === password) {
-        showSuccessMsg('Entered password is same as previous password')
-        return
-    }
-    editPassDiv.classList.add('hidden')
-    changePass.classList.remove('hidden')
-    currentUser.password = password
-    localStorage.setItem('currentUser', JSON.stringify(currentUser))
-    showSuccessMsg()
-    password = null
-})
-
-function scheduleHide() {
-    profileTab.classList.add('hide');
 }
 
 function openPopUp() {
@@ -227,7 +70,6 @@ function getTodo() {
     if (!todo) {
         return
     }
-    console.log(this.dataset.status)
     const todoObj = {
         id: Date.now(),
         todo,
@@ -258,8 +100,6 @@ function handleDrag(e) {
         this.style.display = 'none'
     }, 0)
     draggedEleId = this.id
-    console.log(draggedEleId)
-    console.log('yes')
 }
 
 function addSubTask(id) {
@@ -289,6 +129,15 @@ function handleSubtaskvisibility(e) {
     }
 }
 
+function deleteSubtask() {
+    const subTaskEl = document.getElementById(`subtask-${this.dataset.subId}`)
+    subTaskEl.remove()
+    const todo = allTodos[0].todos.find(todo => todo.id === Number(this.dataset.parentId))
+    const subTaskIndex = todo.subTask.findIndex(sub => sub.id === Number(this.dataset.subId))
+    todo.subTask.splice(subTaskIndex, 1)
+    localStorage.setItem('todo', JSON.stringify(allTodos))
+}
+
 function renderSubTask(parentid, id, subTask, isChecked) {
     const template = document.querySelector('template')
     const cloned = template.content.cloneNode(true)
@@ -297,6 +146,7 @@ function renderSubTask(parentid, id, subTask, isChecked) {
     }
     const label = cloned.querySelector('label')
     const checkbox = cloned.querySelector('input')
+    const deleteBtn = cloned.querySelector('.bi-trash-fill')
     label.textContent = subTask
     label.setAttribute('for', `${id}`)
     checkbox.id = id
@@ -304,8 +154,12 @@ function renderSubTask(parentid, id, subTask, isChecked) {
     const div = document.createElement('div')
     div.setAttribute('class', 'subtask animation-height')
     div.setAttribute('id', `subtask-${id}`)
+    deleteBtn.dataset.subId = id
+    deleteBtn.dataset.parentId = parentid
     div.append(checkbox)
     div.append(label)
+    div.append(deleteBtn)
+    deleteBtn.addEventListener('click', deleteSubtask)
     const li = document.getElementById(`${parentid}`)
     li.append(div)
 }
@@ -336,7 +190,6 @@ function handelEditPopup(e) {
     const text = todo.todo
     const li = document.getElementById(`${id}`)
     li.draggable = false
-    console.log(window.innerWidth)
     blackdrop.classList.remove('hidden')
     removeScrolling()
     const parent = this.parentElement
@@ -346,7 +199,6 @@ function handelEditPopup(e) {
     const y = rect.top
     const input = nextSibling.querySelector('textarea')
     const subtaskBtn = nextSibling.querySelector('.add-subtask')
-    console.log(subtaskBtn)
     input.value = text
     input.focus()
     nextSibling.style.top = `${y}px`
@@ -360,9 +212,7 @@ function handelEditPopup(e) {
         } else if (ev.target !== input) {
             const updatedText = input.value.trim()
             if (updatedText && todo.todo !== updatedText) {
-                console.dir(li.querySelector('p'))
                 li.querySelector('p').querySelector('i').nextSibling.textContent = updatedText
-                // li.dataset.text = updatedText
                 todo.todo = updatedText
                 localStorage.setItem('todo', JSON.stringify(allTodos))
             }
@@ -395,7 +245,7 @@ function renderToDo(todo) {
                     <textarea></textarea>
                 </div>
                 <div class='edit-buttons'>
-                    <a class='delete-todo'><i class="bi bi-trash-fill hover ">  Delete</i></a>
+                    <a class='delete-todo'><i class="bi bi-trash-fill hover">  Delete</i></a>
                     <a class='add-subtask'><i class="bi bi-plus-lg hover" title='click to add sub task'>Sub task</i></a>
                 </div>     
             </div>
@@ -413,7 +263,6 @@ function renderToDo(todo) {
     const subTask = li.querySelector('.add-subtask')
     const dropDown = li.querySelector('.bi-caret-down-fill')
     dropDown.dataset.id = todo.id
-    // dropDown.addEventListener('click', () => { })
     pencil.addEventListener('click', handelEditPopup)
     dropDown.addEventListener('click', handleSubtaskvisibility)
 
@@ -434,26 +283,19 @@ function handleDropEvent(e) {
     e.preventDefault()
     this.classList.remove('dragging')
     const id = e.dataTransfer.getData('text')
-    // console.log(id)
     const drag = document.getElementById(`${id}`)
 
     if (!drag) {
         return
     }
-    if ((drag.dataset.status === 'inQueue' && this.dataset.status === 'completed') || (drag.dataset.status === 'completed' && this.dataset.status === 'inQueue')) {
-        return
-    } else {
-        drag.dataset.status = this?.dataset.status
-        console.log(drag)
-        this.appendChild(drag)
-        const todo = usertodos?.todos?.find(todo => todo.id === Number(id))
-        todo.time = Date.now()
-        todo.status = this.dataset.status
-        usertodos.todos.sort((a, b) => { return a.time - b.time })
-        // console.log(allTodos)
-        localStorage.setItem('todo', JSON.stringify(allTodos))
-    }
-    // console.log(usertodos.todos)
+
+    drag.dataset.status = this?.dataset.status
+    this.appendChild(drag)
+    const todo = usertodos?.todos?.find(todo => todo.id === Number(id))
+    todo.time = Date.now()
+    todo.status = this.dataset.status
+    usertodos.todos.sort((a, b) => { return a.time - b.time })
+    localStorage.setItem('todo', JSON.stringify(allTodos))
 }
 
 
@@ -477,7 +319,6 @@ innerContainers.forEach(innerContainer => {
 
     ul.addEventListener('dragenter', function (e) {
         const li = document.getElementById(`${draggedEleId}`)
-        console.log(li)
         if ((li.dataset.status === 'inQueue' && ul.dataset.status === 'completed') || (li.dataset.status === 'completed' && ul.dataset.status === 'inQueue')) {
             return
         } else if (ul.contains(e.target)) {

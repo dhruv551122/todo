@@ -8,3 +8,8 @@ export function removeError(errorDiv, inputDiv) {
     errorDiv.style.visibility = 'hidden'
     inputDiv.style.border = '1px solid #b0b0b0'
 }
+
+export function removeErrorProfile(errorDiv, inputDiv) {
+    errorDiv.style.visibility = 'hidden'
+    inputDiv.style.border = '1px solid #174dca'
+}

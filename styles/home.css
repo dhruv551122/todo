@@ -360,6 +360,7 @@ button:hover {
 }
 
 .subtask {
+    position: relative;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -369,6 +370,11 @@ button:hover {
     border-radius: 5px;
     margin: 4px 0px;
     transition: all .3s;
+}
+
+.subtask .bi-trash-fill {
+    position: absolute;
+    right: 10px;
 }
 
 .dropdown {
